@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nyoman Set Android - Gacor Edition</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons for gaming look -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Orbitron for Sci-Fi look, Inter for readability -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d0f14;
+        }
+        .gaming-title {
+            font-family: 'Orbitron', sans-serif;
+        }
+        /* Custom Glowing effects */
+        .neon-border-red {
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+        }
+        .neon-glow-green {
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.6);
+        }
+        .neon-glow-blue {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+        }
+        /* Smooth transition for active active states */
+        .transition-all-300 {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* Custom scrollbar for log terminal */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ef4444;
+        }
+        /* Draggable widget styling */
+        #floating-widget {
+            cursor: move;
+            user-select: none;
+            touch-action: none;
+        }
+    </style>
+</head>
+<body class="text-gray-100 min-h-screen pb-12 flex flex-col justify-between">
+
+    <!-- TOP HEADER BAR -->
+    <header class="bg-gray-900 border-b border-red-900/40 p-4 sticky top-0 z-40 backdrop-blur-md bg-opacity-95">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-red-600 to-amber-500 p-2 rounded-xl text-white shadow-lg animate-pulse">
+                    <i class="fa-solid fa-gears text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="gaming-title text-lg md:text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-amber-400 to-yellow-300 tracking-wider">
+                        NYOMAN SET ANDROID
+                    </h1>
+                    <p class="text-xs text-gray-400 font-semibold tracking-widest uppercase">System Optimizer & Sensitivity Injector</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-900/60 text-red-300 border border-red-500/30">
+                    <span class="w-1.5 h-1.5 mr-1.5 bg-red-500 rounded-full animate-ping"></span>
+                    GACOR v3.0
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN INTERACTIVE CONTAINER -->
+    <main class="max-w-4xl w-full mx-auto px-4 py-6 flex-grow">
+
+        <!-- STATUS DAN OVERLAY CONTROLLER -->
+        <section class="bg-gray-900/90 border border-gray-800 rounded-2xl p-5 mb-6 neon-border-red">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <div>
+                    <h2 class="text-lg font-bold text-red-400 mb-2 flex items-center">
+                        <i class="fa-solid fa-shield-halved mr-2"></i> Perizinan & Layanan Utama
+                    </h2>
+                    <p class="text-xs text-gray-400 mb-4 leading-relaxed">
+                        Aktifkan opsi di bawah untuk mengizinkan <span class="text-amber-400 font-semibold">Nyoman Set Android</span> berjalan di atas game (Overlay). Fitur ini wajib untuk memunculkan Widget Melayang agar bidikan (aim) semakin nempel kepala!
+                    </p>
+                    
+                    <!-- Touch feedback notification trigger -->
+                    <div id="status-toast" class="hidden mb-3 bg-green-950/80 border border-green-500/40 text-green-300 p-2 rounded-lg text-xs flex items-center gap-2">
+                        <i class="fa-solid fa-circle-check text-green-400"></i>
+                        <span id="toast-msg">Sukses dikonfigurasi!</span>
+                    </div>
+                </div>
+
+                <!-- OVERLAY CONTROL CARDS -->
+                <div class="bg-gray-950 p-4 rounded-xl border border-gray-800 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="text-sm font-bold block text-gray-200">Izinkan Tampilkan Diatas Aplikasi</span>
+                            <span class="text-[10px] text-gray-400 block" id="overlay-status-lbl">Status: Belum Diizinkan (Nonaktif)</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="overlay-toggle" class="sr-only peer" onchange="toggleOverlayPermission()">
+                            <div class="w-11 h-6 bg-gray-700 rounded-full peer peer-focus:ring-2 peer-focus:ring-red-500 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                        </label>
+                    </div>
+
+                    <div class="border-t border-gray-800/60 pt-3 flex justify-between items-center text-xs">
+                        <span class="text-gray-400">FPS Booster & Touch Delay:</span>
+                        <span class="px-2 py-1 bg-green-900/40 text-green-400 rounded border border-green-500/20 font-mono text-[11px]">ACTIVE (0.01ms)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CHOOSE GAME TAB -->
+        <section class="mb-6">
+            <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3">Pilih Optimasi Game:</h3>
+            <div class="grid grid-cols-3 gap-3">
+                <button onclick="switchGame('ff')" id="btn-tab-ff" class="py-3 px-2 rounded-xl border font-bold text-xs flex flex-col items-center justify-center gap-1 transition-all-300 bg-gradient-to-b from-red-950/40 to-red-900/20 border-red-600 text-red-400 shadow-[0_0_12px_rgba(220,38,38,0.2)]">
+                    <i class="fa-solid fa-fire text-lg"></i>
+                    <span>FREE FIRE</span>
+                </button>
+                <button onclick="switchGame('pubg')" id="btn-tab-pubg" class="py-3 px-2 rounded-xl border font-bold text-xs flex flex-col items-center justify-center gap-1 transition-all-300 bg-gray-900 border-gray-800 text-gray-400 hover:border-gray-700">
+                    <i class="fa-solid fa-crosshairs text-lg"></i>
+                    <span>PUBG MOBILE</span>
+                </button>
+                <button onclick="switchGame('ml')" id="btn-tab-ml" class="py-3 px-2 rounded-xl border font-bold text-xs flex flex-col items-center justify-center gap-1 transition-all-300 bg-gray-900 border-gray-800 text-gray-400 hover:border-gray-700">
+                    <i class="fa-solid fa-shield-halved text-lg"></i>
+                    <span>MOBILE LEGENDS</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- REGISTRY INJECTOR / TWEAK PRESETS -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <!-- LEFT & MID: PRESET PILIHAN (BANG JAPAR, ANDRA GZ, BSK BABAN) -->
+            <div class="md:col-span-2 bg-gray-900/90 border border-gray-800 rounded-2xl p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-black text-sm tracking-wider text-amber-400 flex items-center uppercase">
+                        <i class="fa-solid fa-circle-nodes mr-2"></i> Set Andro Creator Gacor 100%
+                    </h3>
+                    <span class="text-[10px] bg-amber-950 text-amber-300 border border-amber-600/30 px-2 py-0.5 rounded font-mono">FF Prioritized</span>
+                </div>
+
+                <!-- CARDS CREATOR GRID -->
+                <div class="space-y-4">
+                    <!-- BANG JAPAR -->
+                    <div class="bg-gray-950 border border-gray-800/80 rounded-xl p-4 transition-all hover:border-red-900">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center font-bold text-sm text-white">BJ</div>
+                                <div>
+                                    <h4 class="font-bold text-sm text-gray-100">Bang Japar Set</h4>
+                                    <span class="text-[10px] text-red-400 font-mono">DPI Rekomendasi: 710</span>
+                                </div>
+                            </div>
+                            <button onclick="applyPreset('japar')" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold text-[10px] rounded-lg shadow-md hover:shadow-red-900/30 transition-all flex items-center gap-1">
+                                <i class="fa-solid fa-bolt"></i> INJECT SET
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 text-[10px] bg-gray-900/50 p-2 rounded border border-gray-900">
+                            <div><span class="text-gray-500 block">Licin Layar:</span> <span class="text-green-400 font-bold">100 (Max)</span></div>
+                            <div><span class="text-gray-500 block">Pointer Speed:</span> <span class="text-green-400 font-bold">Maksimal</span></div>
+                            <div><span class="text-gray-500 block">Akurasi Headshot:</span> <span class="text-amber-400 font-bold">99.8%</span></div>
+                        </div>
+                    </div>
+
+                    <!-- BANG ANDRA GZ -->
+                    <div class="bg-gray-950 border border-gray-800/80 rounded-xl p-4 transition-all hover:border-amber-900">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center font-bold text-sm text-black">AG</div>
+                                <div>
+                                    <h4 class="font-bold text-sm text-gray-100">Bang Andra GZ Set</h4>
+                                    <span class="text-[10px] text-amber-400 font-mono">DPI Rekomendasi: 566</span>
+                                </div>
+                            </div>
+                            <button onclick="applyPreset('andra')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-black font-bold text-[10px] rounded-lg shadow-md hover:shadow-amber-500/20 transition-all flex items-center gap-1">
+                                <i class="fa-solid fa-bolt"></i> INJECT SET
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 text-[10px] bg-gray-900/50 p-2 rounded border border-gray-900">
+                            <div><span class="text-gray-500 block">Responsif:</span> <span class="text-green-400 font-bold">Ultra Fast</span></div>
+                            <div><span class="text-gray-500 block">Driver Grafis:</span> <span class="text-green-400 font-bold">System Driver</span></div>
+                            <div><span class="text-gray-500 block">Aim Lock Rate:</span> <span class="text-amber-400 font-bold">100% Gacor</span></div>
+                        </div>
+                    </div>
+
+                    <!-- BSK BABAN -->
+                    <div class="bg-gray-950 border border-gray-800/80 rounded-xl p-4 transition-all hover:border-blue-900">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center font-bold text-sm text-white">BB</div>
+                                <div>
+                                    <h4 class="font-bold text-sm text-gray-100">BSK Baban Set</h4>
+                                    <span class="text-[10px] text-blue-400 font-mono">DPI Rekomendasi: 600</span>
+                                </div>
+                            </div>
+                            <button onclick="applyPreset('baban')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] rounded-lg shadow-md hover:shadow-blue-900/30 transition-all flex items-center gap-1">
+                                <i class="fa-solid fa-bolt"></i> INJECT SET
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 text-[10px] bg-gray-900/50 p-2 rounded border border-gray-900">
+                            <div><span class="text-gray-500 block">Sensitivitas:</span> <span class="text-green-400 font-bold">No-Recoil</span></div>
+                            <div><span class="text-gray-500 block">Buffer Log:</span> <span class="text-green-400 font-bold">256K</span></div>
+                            <div><span class="text-gray-500 block">Auto-Aim Drag:</span> <span class="text-amber-400 font-bold">Smooth V-Drag</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: TERMINAL SIMULATOR / LOGGER -->
+            <div class="bg-gray-950 border border-gray-800 rounded-2xl p-4 flex flex-col justify-between h-[390px] md:h-auto">
+                <div>
+                    <div class="flex items-center justify-between mb-3 border-b border-gray-800 pb-2">
+                        <span class="text-xs font-bold text-red-500 font-mono flex items-center">
+                            <span class="w-2.5 h-2.5 bg-red-500 rounded-full inline-block mr-2 animate-ping"></span>
+                            ACTIVE LOG CONSOLE
+                        </span>
+                        <button onclick="clearLogs()" class="text-[10px] text-gray-500 hover:text-red-400">
+                            <i class="fa-solid fa-trash-can"></i> Clear
+                        </button>
+                    </div>
+                    <!-- LOG LIST -->
+                    <div id="terminal-logs" class="space-y-2 h-[220px] md:h-[260px] overflow-y-auto font-mono text-[10px] text-gray-300 leading-tight pr-1">
+                        <p class="text-gray-500">[SYSTEM] Nyoman Set Android diinisialisasi...</p>
+                        <p class="text-gray-500">[SYSTEM] Engine siap, menunggu injeksi...</p>
+                    </div>
+                </div>
+                <div class="pt-3 border-t border-gray-900">
+                    <button onclick="runDiagnostic()" class="w-full py-2 bg-gradient-to-r from-red-900 to-red-700 hover:from-red-800 hover:to-red-600 text-white font-bold text-xs rounded-xl shadow-lg flex items-center justify-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-terminal"></i> DIAGNOSTIK ANDROID
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- DETAILED MANUAL TWEAK SETTING (SETEDIT SIMULATOR) -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <!-- SYSTEM VARIABLES INJECTOR (SetEdit) -->
+            <div class="bg-gray-900/90 border border-gray-800 rounded-2xl p-5">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-sm text-gray-100 flex items-center">
+                        <i class="fa-solid fa-sliders text-amber-500 mr-2"></i> Custom SetEdit Database
+                    </h3>
+                    <span class="text-[10px] px-2 py-0.5 bg-gray-950 border border-gray-800 rounded font-semibold text-gray-400">System Table</span>
+                </div>
+                
+                <!-- INPUT FORM FOR TWEAKS -->
+                <div class="bg-gray-950 p-4 rounded-xl border border-gray-900 space-y-3 mb-4">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[10px] text-gray-400 block mb-1">Nama Kode (Key):</label>
+                            <input id="setedit-key" type="text" placeholder="touch.delay" class="w-full bg-gray-900 border border-gray-800 rounded px-2.5 py-1.5 text-xs text-amber-300 focus:outline-none focus:border-red-500 font-mono">
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-gray-400 block mb-1">Nilai (Value):</label>
+                            <input id="setedit-val" type="text" placeholder="0" class="w-full bg-gray-900 border border-gray-800 rounded px-2.5 py-1.5 text-xs text-amber-300 focus:outline-none focus:border-red-500 font-mono">
+                        </div>
+                    </div>
+                    <button onclick="injectCustomKey()" class="w-full py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-200 text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-circle-plus text-amber-400"></i> Suntik Tweak Baru (SetEdit)
+                    </button>
+                </div>
+
+                <!-- PRELOADED KEY/VALUES LIST -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between text-[11px] bg-gray-950 px-3 py-2 rounded-lg border border-gray-900">
+                        <code class="text-amber-400">touch.pressure.scale</code>
+                        <div class="flex items-center space-x-3">
+                            <span class="font-mono text-gray-400">0.001</span>
+                            <button onclick="updateValue('touch.pressure.scale', '0.001')" class="text-xs text-red-500 hover:text-red-400"><i class="fa-solid fa-rotate"></i></button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between text-[11px] bg-gray-950 px-3 py-2 rounded-lg border border-gray-900">
+                        <code class="text-amber-400">accessibility_touch_receptivity</code>
+                        <div class="flex items-center space-x-3">
+                            <span class="font-mono text-gray-400">1</span>
+                            <button onclick="updateValue('accessibility_touch_receptivity', '1')" class="text-xs text-red-500 hover:text-red-400"><i class="fa-solid fa-rotate"></i></button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between text-[11px] bg-gray-950 px-3 py-2 rounded-lg border border-gray-900">
+                        <code class="text-amber-400">pointer_speed</code>
+                        <div class="flex items-center space-x-3">
+                            <span class="font-mono text-gray-400">7 (Max)</span>
+                            <button onclick="updateValue('pointer_speed', '7')" class="text-xs text-red-500 hover:text-red-400"><i class="fa-solid fa-rotate"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FINE-TUNING SLIDER PREFERENCE -->
+            <div class="bg-gray-900/90 border border-gray-800 rounded-2xl p-5 flex flex-col justify-between">
+                <div>
+                    <h3 class="font-bold text-sm text-gray-100 flex items-center mb-4">
+                        <i class="fa-solid fa-wand-magic-sparkles text-red-500 mr-2"></i> Pengaturan Presisi Sensitivitas <span id="target-game-label" class="text-red-400 ml-1">FF</span>
+                    </h3>
+
+                    <!-- DPI SLIDER -->
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold mb-1">
+                                <span class="text-gray-300">DPI Emulator</span>
+                                <span class="text-red-400 font-mono" id="val-dpi">600 DPI</span>
+                            </div>
+                            <input type="range" id="slider-dpi" min="300" max="1200" value="600" oninput="updateSliders()" class="w-full accent-red-600 bg-gray-800 rounded-lg appearance-none h-1.5">
+                        </div>
+
+                        <!-- SENSITIVITAS UTAMA (LIHAT SEKELILING / GENERAL) -->
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold mb-1">
+                                <span class="text-gray-300">Sensitivitas Lihat Sekeliling (General)</span>
+                                <span class="text-red-400 font-mono" id="val-sensi-gen">95%</span>
+                            </div>
+                            <input type="range" id="slider-sensi-gen" min="50" max="100" value="95" oninput="updateSliders()" class="w-full accent-red-600 bg-gray-800 rounded-lg appearance-none h-1.5">
+                        </div>
+
+                        <!-- RED DOT SIGHT -->
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold mb-1">
+                                <span class="text-gray-300">Red Dot Sight</span>
+                                <span class="text-red-400 font-mono" id="val-sensi-red">90%</span>
+                            </div>
+                            <input type="range" id="slider-sensi-red" min="50" max="100" value="90" oninput="updateSliders()" class="w-full accent-red-600 bg-gray-800 rounded-lg appearance-none h-1.5">
+                        </div>
+
+                        <!-- SCOPE SENSITIVITIES (COMBINED INDICATOR FOR ACCURACY) -->
+                        <div class="grid grid-cols-2 gap-3 bg-gray-950 p-3 rounded-lg border border-gray-900">
+                            <div>
+                                <span class="text-[10px] text-gray-500 block">2x Scope Target:</span>
+                                <span class="text-xs font-bold font-mono text-gray-200" id="val-sensi-2x">95%</span>
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-gray-500 block">4x Scope Target:</span>
+                                <span class="text-xs font-bold font-mono text-gray-200" id="val-sensi-4x">98%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-gray-800">
+                    <button onclick="applyAllSensitivities()" class="w-full py-3 bg-gradient-to-r from-red-600 to-amber-500 hover:from-red-700 hover:to-amber-600 text-white font-black text-sm rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 text-center uppercase tracking-wider">
+                        <i class="fa-solid fa-gamepad mr-2"></i> TERAPKAN SENSITIVITAS GACOR 100%
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ / KETERANGAN KREATOR -->
+        <section class="bg-gray-950/60 border border-gray-900 rounded-2xl p-5">
+            <h4 class="font-bold text-sm text-gray-200 mb-3 flex items-center">
+                <i class="fa-solid fa-circle-info text-blue-500 mr-2"></i> Mengapa Harus Sensitivitas Nyoman Set Android?
+            </h4>
+            <div class="text-xs text-gray-400 space-y-3 leading-relaxed">
+                <p>
+                    Aplikasi ini mensimulasikan injeksi konfigurasi <span class="text-red-400 font-semibold">SetEdit</span>, optimasi <span class="text-red-400 font-semibold">DPI Android</span>, dan pengaturan sistem registry yang terinspirasi dari para Pro Player & konten kreator ternama seperti <span class="text-amber-400 font-semibold">Bang Japar</span>, <span class="text-amber-400 font-semibold">Bang Andra GZ</span>, dan <span class="text-amber-400 font-semibold">BSK Baban</span>.
+                </p>
+                <p>
+                    <strong>Panduan Gacor:</strong> Pilih preset kreator favoritmu, sesuaikan DPI sesuai kenyamanan smartphone kamu, aktifkan switch <strong>"Izinkan Tampilkan Diatas Aplikasi"</strong>, lalu mainkan game Free Fire kamu untuk merasakan sensasi aim nempel kepala tanpa licin berlebihan!
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER DEVELOPMENT CREDITS -->
+    <footer class="mt-8 border-t border-gray-900 pt-6 text-center text-xs text-gray-500">
+        <p>© 2026 Nyoman Set Android Team. Semua Hak Cipta Dilindungi.</p>
+        <p class="mt-1 text-gray-600">Aplikasi Simulasi SetAndro & Optimasi Aim Pro Player Free Fire.</p>
+    </footer>
+
+    <!-- INTERACTIVE FLOATING WIDGET (OVERLAY SIMULATOR) -->
+    <!-- This overlay widget will ONLY display if the overlay switch/toggle is enabled -->
+    <div id="floating-widget" class="fixed bottom-10 right-6 z-50 bg-gray-900/95 border-2 border-red-500 rounded-2xl shadow-[0_0_20px_rgba(239,68,68,0.5)] p-4 w-64 hidden select-none">
+        <!-- Widget Header/Draggbar -->
+        <div class="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
+            <div class="flex items-center space-x-1.5">
+                <i class="fa-solid fa-circle-dot text-red-500 animate-ping text-[8px]"></i>
+                <span class="text-[10px] font-black text-gray-100 font-mono tracking-widest uppercase">NYOMAN OVERLAY WIDGET</span>
+            </div>
+            <button onclick="toggleOverlayWidgetView(false)" class="text-gray-500 hover:text-white transition-all text-xs">
+                <i class="fa-solid fa-circle-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Widget Body content -->
+        <div class="space-y-2">
+            <div class="bg-gray-950 p-2 rounded border border-gray-800 text-[10px] font-mono">
+                <div class="text-gray-500">Preset Aktif:</div>
+                <div class="font-bold text-amber-400" id="widget-active-preset">Bang Japar Special Set</div>
+            </div>
+
+            <!-- AIM GUIDELINE SENSITIVITY PREVIEW -->
+            <div class="space-y-1">
+                <div class="flex justify-between text-[9px] text-gray-400">
+                    <span>Aim Assist Drag:</span>
+                    <span class="text-green-400 font-bold">STABLE 100%</span>
+                </div>
+                <div class="flex justify-between text-[9px] text-gray-400">
+                    <span>Sensi Lihat Sekeliling:</span>
+                    <span class="text-green-400 font-bold" id="widget-sensi-gen">99%</span>
+                </div>
+                <div class="flex justify-between text-[9px] text-gray-400">
+                    <span>Saran DPI:</span>
+                    <span class="text-red-400 font-bold font-mono" id="widget-dpi">710 DPI</span>
+                </div>
+            </div>
+
+            <div class="pt-2 border-t border-gray-800 flex justify-between gap-1">
+                <button onclick="triggerQuickBoost()" class="flex-grow py-1 px-2 bg-gradient-to-r from-red-600 to-amber-500 text-[9px] font-black rounded text-white hover:opacity-90 active:scale-95 transition-all text-center">
+                    <i class="fa-solid fa-circle-radiation mr-1"></i> BOOST FPS
+                </button>
+                <button onclick="copyCurrentSet()" class="py-1 px-2 bg-gray-800 hover:bg-gray-700 text-gray-300 text-[9px] font-bold rounded flex items-center justify-center">
+                    <i class="fa-solid fa-copy"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Status indicator dragging tip -->
+        <div class="text-[8px] text-gray-500 text-center mt-2 font-semibold">Tahan & Geser widget ini di layar Anda</div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Game active state tracking
+        let activeGame = 'ff';
+        let currentPreset = 'japar'; // default
+        let systemLogs = [];
+
+        // Audio context for premium synthetic clicks and ticks
+        let audioCtx = null;
+        function playBeep(frequency = 600, duration = 0.08, type = 'sine') {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                // AudioContext not allowed or supported
+            }
+        }
+
+        // Initialize state on load
+        window.onload = function() {
+            addLog("Aplikasi Nyoman Set Android Berhasil Dimuat.");
+            addLog("Ready to optimize Free Fire, PUBG & Mobile Legends!");
+            setupDraggableWidget();
+        };
+
+        // Switch Game Logic
+        function switchGame(gameCode) {
+            playBeep(450, 0.1, 'triangle');
+            activeGame = gameCode;
+
+            const tabFF = document.getElementById('btn-tab-ff');
+            const tabPUBG = document.getElementById('btn-tab-pubg');
+            const tabML = document.getElementById('btn-tab-ml');
+            const labelGame = document.getElementById('target-game-label');
+
+            // Reset tab layouts
+            [tabFF, tabPUBG, tabML].forEach(btn => {
+                btn.className = "py-3 px-2 rounded-xl border font-bold text-xs flex flex-col items-center justify-center gap-1 transition-all-300 bg-gray-900 border-gray-800 text-gray-400 hover:border-gray-700";
+            });
+
+            // Set current active game tab
+            if (gameCode === 'ff') {
+                tabFF.className = "py-3 px-2 rounded-xl border font-bold text-xs flex flex-col items-center justify-center gap-1 transition-all-300 bg-gradient-to-b from-red-950/40 to-red-900/20 border-red-600 text-red-400 shadow-[0_0_12px_rgba(220,38,38,0.2)]";
+                labelGame.textContent = "FF";
+                document.getElementById('slider-dpi').value = 710;
+                document.getElementById('slider-sensi-gen').value = 99;
+                document.getElementById('slider-sensi-red').value = 95;
+                addLog("[SYSTEM] Optimasi difokuskan pada Free Fire (Auto-Headshot Mode).");
+            } else if (gameCode === 'pubg') {
+                tabPUBG.className = "py-3 px-2 rounded-xl border font-bold text-xs flex flex-col items-center justify-center gap-1 transition-all-300 bg-gradient-to-b from-amber-950/40 to-amber-900/20 border-amber-600 text-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.2)]";
+                labelGame.textContent = "PUBG";
+                document.getElementById('slider-dpi').value = 450;
+                document.getElementById('slider-sensi-gen').value = 85;
+                document.getElementById('slider-sensi-red').value = 80;
+                addLog("[SYSTEM] Optimasi difokuskan pada PUBG Mobile (Gyroscope & Zero Recoil Mode).");
+            } else if (gameCode === 'ml') {
+                tabML.className = "py-3 px-2 rounded-xl border font-bold text-xs flex flex-col items-center justify-center gap-1 transition-all-300 bg-gradient-to-b from-blue-950/40 to-blue-900/20 border-blue-600 text-blue-400 shadow-[0_0_12px_rgba(59,130,246,0.2)]";
+                labelGame.textContent = "MLBB";
+                document.getElementById('slider-dpi').value = 380;
+                document.getElementById('slider-sensi-gen').value = 90;
+                document.getElementById('slider-sensi-red').value = 75;
+                addLog("[SYSTEM] Optimasi difokuskan pada Mobile Legends (Response Sentuh Ultra & Fast Hand).");
+            }
+
+            updateSliders();
+        }
+
+        // Overlay Switch Toggle Simulator
+        function toggleOverlayPermission() {
+            playBeep(800, 0.15, 'sine');
+            const isChecked = document.getElementById('overlay-toggle').checked;
+            const statusLbl = document.getElementById('overlay-status-lbl');
+            const widget = document.getElementById('floating-widget');
+
+            if (isChecked) {
+                statusLbl.textContent = "Status: Diizinkan (Aktif)";
+                statusLbl.classList.add('text-green-400');
+                statusLbl.classList.remove('text-gray-400');
+                showToast("Izin Overlay Diaktifkan! Widget melayang telah muncul di kanan bawah.");
+                addLog("[SYSTEM] Izin Overlay disetujui. Widget melayang aktif.");
+                toggleOverlayWidgetView(true);
+            } else {
+                statusLbl.textContent = "Status: Belum Diizinkan (Nonaktif)";
+                statusLbl.classList.remove('text-green-400');
+                statusLbl.classList.add('text-gray-400');
+                showToast("Izin Overlay dinonaktifkan.");
+                addLog("[SYSTEM] Izin Overlay dicabut.");
+                toggleOverlayWidgetView(false);
+            }
+        }
+
+        function toggleOverlayWidgetView(show) {
+            const widget = document.getElementById('floating-widget');
+            if (show) {
+                widget.classList.remove('hidden');
+                // Set default positioning on opening
+                widget.style.top = '';
+                widget.style.bottom = '40px';
+                widget.style.left = '';
+                widget.style.right = '24px';
+            } else {
+                widget.classList.add('hidden');
+                document.getElementById('overlay-toggle').checked = false;
+                document.getElementById('overlay-status-lbl').textContent = "Status: Belum Diizinkan (Nonaktif)";
+                document.getElementById('overlay-status-lbl').classList.remove('text-green-400');
+            }
+        }
+
+        // Add Log to Simulator Console
+        function addLog(message) {
+            const terminal = document.getElementById('terminal-logs');
+            const timestamp = new Date().toLocaleTimeString('id-ID');
+            const logItem = document.createElement('p');
+            logItem.className = 'border-l-2 border-red-600 pl-1.5 transition-all';
+            logItem.innerHTML = `<span class="text-red-500 font-bold">[${timestamp}]</span> ${message}`;
+            terminal.appendChild(logItem);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function clearLogs() {
+            playBeep(200, 0.1, 'sawtooth');
+            const terminal = document.getElementById('terminal-logs');
+            terminal.innerHTML = `<p class="text-gray-500">[SYSTEM] Logs dibersihkan...</p>`;
+        }
+
+        // Apply Creators' Presets
+        function applyPreset(creator) {
+            playBeep(650, 0.2, 'sine');
+            currentPreset = creator;
+
+            const dpiSlider = document.getElementById('slider-dpi');
+            const genSlider = document.getElementById('slider-sensi-gen');
+            const redSlider = document.getElementById('slider-sensi-red');
+
+            if (creator === 'japar') {
+                dpiSlider.value = 710;
+                genSlider.value = 99;
+                redSlider.value = 95;
+                addLog("[PRESET] Menerapkan Konfigurasi Bang Japar (710 DPI).");
+                addLog("[PRESET] Menyuntikkan: touch.pressure.scale=0.001");
+                addLog("[PRESET] Menyuntikkan: windows_animation_scale=0.5");
+                document.getElementById('widget-active-preset').textContent = "Bang Japar Special Set";
+                showToast("Suntikan Set Bang Japar BERHASIL! (100% Gacor)");
+            } else if (creator === 'andra') {
+                dpiSlider.value = 566;
+                genSlider.value = 100;
+                redSlider.value = 88;
+                addLog("[PRESET] Menerapkan Konfigurasi Bang Andra GZ (566 DPI).");
+                addLog("[PRESET] Menyuntikkan: pointer_speed=7 (Max)");
+                addLog("[PRESET] Menyuntikkan: accessibility_touch_receptivity=1");
+                document.getElementById('widget-active-preset').textContent = "Bang Andra GZ Set";
+                showToast("Suntikan Set Bang Andra GZ SUKSES! (Aim lock nempel)");
+            } else if (creator === 'baban') {
+                dpiSlider.value = 600;
+                genSlider.value = 96;
+                redSlider.value = 100;
+                addLog("[PRESET] Menerapkan Konfigurasi BSK Baban (600 DPI).");
+                addLog("[PRESET] Menyuntikkan: multitouch.enable=1");
+                addLog("[PRESET] Menyuntikkan: view.scroll_friction=0.005");
+                document.getElementById('widget-active-preset').textContent = "BSK Baban Special Set";
+                showToast("Suntikan Set BSK Baban BERHASIL! (Licin No-Recoil)");
+            }
+
+            updateSliders();
+        }
+
+        // Live Sliders Value Update
+        function updateSliders() {
+            const dpi = document.getElementById('slider-dpi').value;
+            const gen = document.getElementById('slider-sensi-gen').value;
+            const red = document.getElementById('slider-sensi-red').value;
+
+            document.getElementById('val-dpi').textContent = `${dpi} DPI`;
+            document.getElementById('val-sensi-gen').textContent = `${gen}%`;
+            document.getElementById('val-sensi-red').textContent = `${red}%`;
+
+            // Calculate scope values logically derived from DPI & General Sensi
+            const scope2x = Math.min(100, Math.round(parseInt(gen) * 0.96));
+            const scope4x = Math.min(100, Math.round(parseInt(gen) * 0.99));
+
+            document.getElementById('val-sensi-2x').textContent = `${scope2x}%`;
+            document.getElementById('val-sensi-4x').textContent = `${scope4x}%`;
+
+            // Sync widget displays
+            document.getElementById('widget-dpi').textContent = `${dpi} DPI`;
+            document.getElementById('widget-sensi-gen').textContent = `${gen}%`;
+        }
+
+        // Custom SetEdit database keys injector simulator
+        function injectCustomKey() {
+            const keyInput = document.getElementById('setedit-key');
+            const valInput = document.getElementById('setedit-val');
+
+            const key = keyInput.value.trim();
+            const val = valInput.value.trim();
+
+            if (!key || !val) {
+                playBeep(250, 0.15, 'sawtooth');
+                showToast("Lengkapi nama key dan nilai value!");
+                return;
+            }
+
+            playBeep(900, 0.1, 'sine');
+            addLog(`[SetEdit] Menyuntikkan registry baru: "${key}" -> "${val}"`);
+            showToast(`Sukes menyuntikkan "${key}" ke System Table!`);
+            
+            keyInput.value = '';
+            valInput.value = '';
+        }
+
+        function updateValue(key, value) {
+            playBeep(700, 0.08, 'sine');
+            addLog(`[SetEdit] Mereset/Memperbarui database: ${key} = ${value}`);
+            showToast(`Sistem registry "${key}" berhasil dioptimasi!`);
+        }
+
+        // Apply All Sensitivities Button Action
+        function applyAllSensitivities() {
+            playBeep(1000, 0.3, 'sine');
+            const dpi = document.getElementById('slider-dpi').value;
+            const gen = document.getElementById('slider-sensi-gen').value;
+            
+            addLog(`[INJECTOR] Menyetel ulang Touchscreen refresh rate ke maksimal...`);
+            addLog(`[INJECTOR] Menerapkan DPI sistem ke: ${dpi} DPI`);
+            addLog(`[INJECTOR] Mengatur koefisien sensitivitas Drag-shot ke ${gen}%`);
+            addLog(`[SYSTEM STATUS] GACOR 100% SUKSES DITERAPKAN DI LATAR BELAKANG.`);
+
+            showToast("Sensitivitas Gacor Berhasil Di-Inject ke Sistem!");
+        }
+
+        // Terminal Diagnostic Simulator
+        function runDiagnostic() {
+            playBeep(500, 0.4, 'triangle');
+            clearLogs();
+            addLog("[Mulai Diagnostik] Memindai parameter sentuh Android...");
+            setTimeout(() => addLog("[Diagnostik] Deteksi CPU Core: Aktif 8-Core (Performance Mode)."), 300);
+            setTimeout(() => addLog("[Diagnostik] Buffer Log: Diatur ke 256K (Anti FPS Drop)."), 600);
+            setTimeout(() => addLog("[Diagnostik] Respon Sentuh: 120Hz Touch Sampling Rate terdeteksi."), 900);
+            setTimeout(() => addLog("[Diagnostik] Status Aim: Aim Lock Kepala Aktif (No Recoil)."), 1200);
+            setTimeout(() => addLog("[Mulai Diagnostik] STATUS: SISTEM ANDROID SANGAT GACOR!"), 1500);
+        }
+
+        // Overlay quick boost action
+        function triggerQuickBoost() {
+            playBeep(1100, 0.1, 'sine');
+            addLog("[WIDGET BOOST] Mengosongkan cache RAM & memperlancar sensitivitas game!");
+            showToast("RAM & FPS Booster Aktif! Layar semakin licin!");
+        }
+
+        // Copy current configuration settings to clipboard
+        function copyCurrentSet() {
+            playBeep(850, 0.1, 'sine');
+            const dpi = document.getElementById('slider-dpi').value;
+            const gen = document.getElementById('slider-sensi-gen').value;
+            const red = document.getElementById('slider-sensi-red').value;
+            
+            const configText = `Nyoman Set Android - Gacor Config\nGame: ${activeGame.toUpperCase()}\nDPI: ${dpi}\nLihat Sekeliling: ${gen}%\nRed Dot: ${red}%`;
+            
+            // Use fallback helper as required
+            const tempInput = document.createElement("textarea");
+            tempInput.value = configText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            
+            showToast("Konfigurasi sensitivitas berhasil disalin ke Clipboard!");
+            addLog("[WIDGET OVERLAY] Konfigurasi disalin ke clipboard.");
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('status-toast');
+            const msgSpan = document.getElementById('toast-msg');
+            msgSpan.textContent = message;
+            toast.classList.remove('hidden');
+
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3500);
+        }
+
+        // Draggable Overlay Widget Logic
+        function setupDraggableWidget() {
+            const widget = document.getElementById("floating-widget");
+            let active = false;
+            let currentX;
+            let currentY;
+            let initialX;
+            let initialY;
+            let xOffset = 0;
+            let yOffset = 0;
+
+            widget.addEventListener("touchstart", dragStart, { passive: true });
+            widget.addEventListener("touchend", dragEnd, { passive: true });
+            widget.addEventListener("touchmove", drag, { passive: true });
+
+            widget.addEventListener("mousedown", dragStart, false);
+            widget.addEventListener("mouseup", dragEnd, false);
+            widget.addEventListener("mousemove", drag, false);
+
+            function dragStart(e) {
+                if (e.type === "touchstart") {
+                    initialX = e.touches[0].clientX - xOffset;
+                    initialY = e.touches[0].clientY - yOffset;
+                } else {
+                    initialX = e.clientX - xOffset;
+                    initialY = e.clientY - yOffset;
+                }
+
+                if (e.target === widget || widget.contains(e.target)) {
+                    active = true;
+                }
+            }
+
+            function dragEnd(e) {
+                initialX = currentX;
+                initialY = currentY;
+                active = false;
+            }
+
+            function drag(e) {
+                if (active) {
+                    e.preventDefault();
+
+                    if (e.type === "touchmove") {
+                        currentX = e.touches[0].clientX - initialX;
+                        currentY = e.touches[0].clientY - initialY;
+                    } else {
+                        currentX = e.clientX - initialX;
+                        currentY = e.clientY - initialY;
+                    }
+
+                    xOffset = currentX;
+                    yOffset = currentY;
+
+                    setTranslate(currentX, currentY, widget);
+                }
+            }
+
+            function setTranslate(xPos, yPos, el) {
+                el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
+            }
+        }
+    </script>
+</body>
+</html>
